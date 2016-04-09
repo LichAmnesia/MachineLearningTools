@@ -2,8 +2,15 @@
 # @Author: Lich_Amnesia  
 # @Email: alwaysxiaop@gmail.com
 # @Date:   2016-04-09 21:00:45
-# @Last Modified time: 2016-04-10 01:29:25
+# @Last Modified time: 2016-04-10 01:42:49
 # @FileName: LogisticRegression.py
+'''
+if you do not want to generate new train/test dataset, you will not need to use preDataProcess function.
+You just need to change the configuration like theta and maxCycles
+
+this py do not add regularization.
+'''
+
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -52,6 +59,7 @@ def preDataProcess():
 	trainDataSet = np.c_[X0,trainDataSet]
 	X0 = np.array([1.0 for i in range(testDataSet.shape[0])])
 	testDataSet = np.c_[X0,testDataSet]
+	# write train/test dataset to file
 	np.savetxt(trainFile,trainDataSet,fmt='%.2f %.2f %.2f %.2f %d')
 	np.savetxt(testFile,testDataSet,fmt='%.2f %.2f %.2f %.2f %d')
 	return trainDataSet, testDataSet
@@ -64,7 +72,7 @@ def loadData():
 	testDataSet = np.loadtxt(open(testFile,"rb"),delimiter=" ")
 	return trainDataSet, testDataSet
 
-# norm
+# normalization, 
 def norm(input_x):
 	mean = np.mean(input_x,axis=0)
 	std = np.std(input_x,axis=0)
@@ -75,8 +83,7 @@ def norm(input_x):
 				input_x[i][j] = (input_x[i][j] - mean[j]) / std[j]
 	return input_x
 	
-
-#
+# sigmoid function, the input_x's size is n * 1 and the output's size is n * 1 too.
 def sigmoid(input_x):
 	return (1.0 / (1.0 + np.exp(-input_x)))
 
@@ -88,6 +95,8 @@ def gradAscent(trainDataSet, alpha, maxCycles):
 	y_mat = np.mat(Y_parameters).T # size: n * 1
 	n,m = X_mat.shape
 	W = np.zeros((m,1)) # initialize W as zero vector, W has m columns for X_i
+	# do maxCycles to get W
+	# this need to be changed, because if old_loss == new_loss, it can return the answer
 	for i in range(maxCycles):
 		input_x = np.dot(X_mat,W)
 		h = sigmoid(input_x)
@@ -99,17 +108,16 @@ def gradAscent(trainDataSet, alpha, maxCycles):
 def classify(testDataSet, W):
 	X_parameters, Y_parameters = testDataSet[:,:-1],testDataSet[:,-1]
 	X_parameters = norm(X_parameters)
-	print X_parameters
 	X_mat = np.mat(X_parameters) # size: n * m (m = 3 now)
 	y_mat = np.mat(Y_parameters).T # size: n * 1
 	n, m = X_mat.shape
 	h = sigmoid(np.dot(X_mat,W))
+	# calculate the error rate
 	error = 0.0
 	for i in range(n):
-		# print round(h[i]), int(y_mat[i])
 		if round(h[i]) != int(y_mat[i]):
 			error += 1
-	print np.c_[h,y_mat]
+	# print np.c_[h,y_mat]
 	print('error rate is {0:.4f}'.format(error / n))
 
 def main():
@@ -122,7 +130,6 @@ def main():
 	maxCycles = 400
 	W = gradAscent(trainDataSet, alpha, maxCycles)
 	classify(testDataSet,W)
-	# gradAscent(testDataSet, alpha, maxCycles)
 
 
 if __name__ == '__main__':
