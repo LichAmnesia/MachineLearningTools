@@ -2,16 +2,10 @@
 # @Author: Lich_Amnesia  
 # @Email: alwaysxiaop@gmail.com
 # @Date:   2016-04-12 15:40:14
-# @Last Modified time: 2016-04-12 17:27:33
+# @Last Modified time: 2016-04-12 18:25:20
 # @FileName: Perceptron.py
 
 
-'''
-if you do not want to generate new train/test dataset, you will not need to use preDataProcess function.
-You just need to change the configuration like theta and maxCycles
-
-this py do not add regularization.
-'''
 
 
 import numpy as np
@@ -48,43 +42,6 @@ def norm(input_x):
 				input_x[i][j] = (input_x[i][j] - mean[j]) / std[j]
 	return input_x
 	
-# sigmoid function, the input_x's size is n * 1 and the output's size is n * 1 too.
-def sigmoid(input_x):
-	return (1.0 / (1.0 + np.exp(-input_x)))
-
-# alpha: steplength maxCycles: number of iterations
-def gradAscent(trainDataSet, alpha, maxCycles):
-	X_parameters, Y_parameters = trainDataSet[:,:-1],trainDataSet[:,-1]
-	X_parameters = norm(X_parameters)
-	X_mat = np.mat(X_parameters) # size: n * m (m = 4, X0=1 now)
-	y_mat = np.mat(Y_parameters).T # size: n * 1
-	n,m = X_mat.shape
-	W = np.zeros((m,1)) # initialize W as zero vector, W has m columns for X_i
-	# do maxCycles to get W
-	# this need to be changed, because if old_loss == new_loss, it can return the answer
-	for i in range(maxCycles):
-		input_x = np.dot(X_mat,W)
-		h = sigmoid(input_x)
-		error = h - y_mat  # size: n * 1
-		W = W - alpha * np.dot(X_mat.T,error)
-	return W
-
-# classify test dataset and give error rate 
-def classify(testDataSet, W):
-	X_parameters, Y_parameters = testDataSet[:,:-1],testDataSet[:,-1]
-	X_parameters = norm(X_parameters)
-	X_mat = np.mat(X_parameters) # size: n * m (m = 6 now, has X_0)
-	y_mat = np.mat(Y_parameters).T # size: n * 1
-	n, m = X_mat.shape
-	h = sigmoid(np.dot(X_mat,W))
-	# calculate the error rate
-	error = 0.0
-	for i in range(n):
-		if round(h[i]) != int(y_mat[i]):
-			error += 1
-	# print np.c_[h,y_mat]
-	print('error rate is {0:.4f}'.format(error / n))
-	return
 
 class Perceptron:
 	def __init__(self, W, alpha, eps = 1e-8):
@@ -93,12 +50,9 @@ class Perceptron:
 		self.eps = eps
 
 	def loss(self, x, y):
-		# print "loss",np.dot(self.W.T,x.T)
 		return y * (np.dot(self.W.T,x.T))
 
 	def sgd(self, x, y):
-		# print self.W ,y,x
-		# print self.alpha * y * x
 		self.W += (self.alpha * y * x).T
 
 	def train(self, trainDataSet):
@@ -115,7 +69,7 @@ class Perceptron:
 				else:
 					M -= 1
 			if M == 0:
-				print self.W
+				print('self.W is \n {0}'.format(self.W))
 				break
 		return self.W
 	
@@ -123,7 +77,7 @@ class Perceptron:
 		X_parameters, Y_parameters = testDataSet[:,:-1],testDataSet[:,-1]
 		# X_parameters = norm(X_parameters)
 		X_mat = np.mat(X_parameters) # size: n * m (m = 6 now, has X_0)
-		y_mat = np.mat(Y_parameters).T # size: 1 * n
+		y_mat = np.mat(Y_parameters).T # size: n * 1
 		n, m = X_mat.shape
 		M = len(X_mat) # wrong classification number
 		for i in range(len(X_mat)):
@@ -133,8 +87,44 @@ class Perceptron:
 			elif np.dot(self.W.T,x.T) > 0 and y_mat[i] == 1 :
 				M -= 1
 		error = float(M) / len(X_mat)
-		print error
+		print('error rate is {0:.4f}'.format(error))
 		return error
+
+
+class Perceptron_dual:
+	def __init__(self, alpha, b, ita, eps = 1e-8):
+		self.alpha = alpha
+		self.b = b
+		self.ita = ita
+		self.eps = eps
+
+	
+	def gram(self,X):
+         return np.dot(X,X.T)
+	
+	def train(self, trainDataSet):
+		X_parameters, Y_parameters = trainDataSet[:,1:-1],trainDataSet[:,-1]
+		# X_parameters = norm(X_parameters)
+		X_mat = np.mat(X_parameters) # size: n * m (m = 2 now,not has X_0)
+		y_mat = np.mat(Y_parameters).T # size: n * 1
+		# Y_parameters 1 * n
+		n, m = X_mat.shape
+		G = self.gram(X_mat)
+		while True:
+			M = len(X_mat) # wrong classification number
+			for j in range(len(X_mat)):
+				if y_mat[j] * (np.sum(self.alpha * Y_parameters * G[j].T) + self.b) <= 0:
+					self.alpha[j] += self.ita
+					self.b += self.ita * y_mat[j]
+				else:
+					M -= 1
+			# print M
+			if M == 0:
+				print('self.alpha is \n {0}\nself.b is \n {1}'.format(self.alpha,self.b))
+				break
+		return self.alpha, self.b
+	
+
 
 def main():
 	trainDataSet, testDataSet = loadData()
@@ -144,6 +134,9 @@ def main():
 	W = perceptronTrain.train(trainDataSet)
 	perceptronTrain.classify(testDataSet)
 
+	perceptronDualTrain = Perceptron_dual(np.zeros(trainDataSet.shape[1] - 1), 0, alpha)
+	W = perceptronDualTrain.train(trainDataSet)
+		
 
 if __name__ == '__main__':
 	main()
