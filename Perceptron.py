@@ -2,7 +2,7 @@
 # @Author: Lich_Amnesia  
 # @Email: alwaysxiaop@gmail.com
 # @Date:   2016-04-12 15:40:14
-# @Last Modified time: 2016-04-12 16:51:04
+# @Last Modified time: 2016-04-12 17:27:33
 # @FileName: Perceptron.py
 
 
@@ -73,7 +73,7 @@ def gradAscent(trainDataSet, alpha, maxCycles):
 def classify(testDataSet, W):
 	X_parameters, Y_parameters = testDataSet[:,:-1],testDataSet[:,-1]
 	X_parameters = norm(X_parameters)
-	X_mat = np.mat(X_parameters) # size: n * m (m = 3 now)
+	X_mat = np.mat(X_parameters) # size: n * m (m = 6 now, has X_0)
 	y_mat = np.mat(Y_parameters).T # size: n * 1
 	n, m = X_mat.shape
 	h = sigmoid(np.dot(X_mat,W))
@@ -87,37 +87,62 @@ def classify(testDataSet, W):
 	return
 
 class Perceptron:
-	def __init__(self, W, alpha):
-		self.W = W
-		# self.b = b
+	def __init__(self, W, alpha, eps = 1e-8):
+		self.W = np.mat(W)
 		self.alpha = alpha
+		self.eps = eps
 
-	def loss(self, X_parameters, Y_parameters):
-		return np.sum(Y_parameters * (np.dot(self.W.T,X_parameters)))
+	def loss(self, x, y):
+		# print "loss",np.dot(self.W.T,x.T)
+		return y * (np.dot(self.W.T,x.T))
+
+	def sgd(self, x, y):
+		# print self.W ,y,x
+		# print self.alpha * y * x
+		self.W += (self.alpha * y * x).T
 
 	def train(self, trainDataSet):
 		X_parameters, Y_parameters = trainDataSet[:,:-1],trainDataSet[:,-1]
 		# X_parameters = norm(X_parameters)
-		X_mat = np.mat(X_parameters) # size: n * m (m = 5 now)
+		X_mat = np.mat(X_parameters) # size: n * m (m = 6 now, has X_0)
 		y_mat = np.mat(Y_parameters).T # size: 1 * n
 		n, m = X_mat.shape
 		while True:
 			M = len(X_mat) # wrong classification number
-			for i in range(len())
-		print len(self.W)
-		return
-		# while 
+			for i in range(len(X_mat)):
+				if self.loss(X_mat[i], y_mat[i])  <= 0:
+					self.sgd(X_mat[i], y_mat[i])
+				else:
+					M -= 1
+			if M == 0:
+				print self.W
+				break
+		return self.W
+	
+	def classify(self, testDataSet):
+		X_parameters, Y_parameters = testDataSet[:,:-1],testDataSet[:,-1]
+		# X_parameters = norm(X_parameters)
+		X_mat = np.mat(X_parameters) # size: n * m (m = 6 now, has X_0)
+		y_mat = np.mat(Y_parameters).T # size: 1 * n
+		n, m = X_mat.shape
+		M = len(X_mat) # wrong classification number
+		for i in range(len(X_mat)):
+			x = X_mat[i]
+			if np.dot(self.W.T,x.T) <= 0 and y_mat[i] == -1:
+				M -= 1
+			elif np.dot(self.W.T,x.T) > 0 and y_mat[i] == 1 :
+				M -= 1
+		error = float(M) / len(X_mat)
+		print error
+		return error
 
 def main():
 	trainDataSet, testDataSet = loadData()
-	perceptronTrain = Perceptron(np.zeros(len(trainDataSet)),1)
-	perceptronTrain.train(trainDataSet)
 	# configure steplength and iterations
-	alpha = 1e-3
-	maxCycles = 400
-
-	W = gradAscent(trainDataSet, alpha, maxCycles)
-	classify(testDataSet,W)
+	alpha = 1
+	perceptronTrain = Perceptron(np.zeros((trainDataSet.shape[1] - 1,1)),alpha)
+	W = perceptronTrain.train(trainDataSet)
+	perceptronTrain.classify(testDataSet)
 
 
 if __name__ == '__main__':
