@@ -2,7 +2,7 @@
 # @Author: Lich_Amnesia  
 # @Email: alwaysxiaop@gmail.com
 # @Date:   2016-04-19 19:36:58
-# @Last Modified time: 2016-04-19 19:42:36
+# @Last Modified time: 2016-04-20 18:47:23
 # @FileName: logistic_sgd.py
 
 """
@@ -95,7 +95,10 @@ class LogisticRegression(object):
         #input是(n_example,n_in)，W是（n_in,n_out）,点乘得到(n_example,n_out)，故p_y_given_x每一行代表每一个样本被估计为各类别的概率
         # symbolic description of how to compute prediction as class whose
         # probability is maximal
-        self.y_pred = T.argmax(self.p_y_given_x, axis=1)
+        # self.y_pred = T.argmax(self.p_y_given_x, axis=1)
+        # 修改成为概率值作为返回
+        self.y_pred = self.p_y_given_x[:,-1]
+
         # end-snippet-1
         #argmax返回最大值下标，因为本例数据集是MNIST，下标刚好就是类别。axis=1表示按行？
         # parameters of the model
@@ -128,6 +131,7 @@ class LogisticRegression(object):
         # i.e., the mean log-likelihood across the minibatch.
         return -T.mean(T.log(self.p_y_given_x)[T.arange(y.shape[0]), y])
         # end-snippet-2
+
     #y大小是(n_example,1),y.shape[0]得出行数即样本数，LP[T.arange(y.shape[0]),y]得到[LP[0,y[0]], LP[1,y[1]], LP[2,y[2]], ...,LP[n-1,y[n-1]]]
     #最后求均值mean，也就是说，minibatch的SGD，是计算出batch里所有样本的NLL的平均值，作为它的cost
     def errors(self, y):
@@ -146,12 +150,14 @@ class LogisticRegression(object):
                 ('y', y.type, 'y_pred', self.y_pred.type)
             )
         # check if y is of the correct datatype
-        if y.dtype.startswith('int'):
-            # the T.neq operator returns a vector of 0s and 1s, where 1
-            # represents a mistake in prediction
-            return T.mean(T.neq(self.y_pred, y))
-        else:
-            raise NotImplementedError()
+        print "errors",self.y_pred,y
+        return T.mean(T.square(self.y_pred- y))
+        # if y.dtype.startswith('int'):
+        #     # the T.neq operator returns a vector of 0s and 1s, where 1
+        #     # represents a mistake in prediction
+            
+        # else:
+        #     raise NotImplementedError()
 
 
 def load_data(dataset):

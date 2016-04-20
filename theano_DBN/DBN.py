@@ -2,7 +2,7 @@
 # @Author: Lich_Amnesia  
 # @Email: alwaysxiaop@gmail.com
 # @Date:   2016-04-20 14:48:28
-# @Last Modified time: 2016-04-20 15:32:05
+# @Last Modified time: 2016-04-20 18:55:32
 # @FileName: DBN.py
 
 """
@@ -381,13 +381,13 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
     :type batch_size: int
     :param batch_size: the size of a minibatch
     """
-    trainset, testset = 'LogisticRegression_train.txt','LogisticRegression_test.txt'
+    trainset, testset = 'LRNorm_train.txt','LRNorm_test.txt'
     datasets = load_data_from_file(trainset, testset)
 
     train_set_x, train_set_y = datasets[0]
     valid_set_x, valid_set_y = datasets[1]
     test_set_x, test_set_y = datasets[2]
-    
+
     # compute number of minibatches for training, validation and testing
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size
 
@@ -395,9 +395,10 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
     numpy_rng = numpy.random.RandomState(123)
     print '... building the model'
     # construct the Deep Belief Network
-    dbn = DBN(numpy_rng=numpy_rng, n_ins=28 * 28,
-              hidden_layers_sizes=[1000, 1000, 1000],
-              n_outs=10)
+    # 修改DBN网络的参数
+    dbn = DBN(numpy_rng=numpy_rng, n_ins=3,
+              hidden_layers_sizes=[50, 30, 20, 10],
+              n_outs=2)
 
     # start-snippet-2
     #########################
@@ -498,9 +499,10 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
                     test_losses = test_model()
                     test_score = numpy.mean(test_losses)
                     print(('     epoch %i, minibatch %i/%i, test error of '
-                           'best model %f %%') %
+                           'best model %f %%') % 
                           (epoch, minibatch_index + 1, n_train_batches,
                            test_score * 100.))
+                    print(dbn.logLayer.y_pred)
 
             if patience <= iter:
                 done_looping = True
@@ -518,6 +520,8 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
                           os.path.split(__file__)[1] +
                           ' ran for %.2fm' % ((end_time - start_time)
                                               / 60.))
+
+    return dbn
 
 
 if __name__ == '__main__':

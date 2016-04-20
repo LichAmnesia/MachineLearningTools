@@ -2,7 +2,7 @@
 # @Author: Lich_Amnesia  
 # @Email: alwaysxiaop@gmail.com
 # @Date:   2016-04-09 21:00:45
-# @Last Modified time: 2016-04-10 01:42:49
+# @Last Modified time: 2016-04-20 16:20:58
 # @FileName: LogisticRegression.py
 '''
 if you do not want to generate new train/test dataset, you will not need to use preDataProcess function.
@@ -91,6 +91,10 @@ def sigmoid(input_x):
 def gradAscent(trainDataSet, alpha, maxCycles):
 	X_parameters, Y_parameters = trainDataSet[:,:-1],trainDataSet[:,-1]
 	X_parameters = norm(X_parameters)
+	
+	# trainDataSet[:,:-1] = norm(trainDataSet[:,:-1])
+	# np.savetxt('data/LRtrain.txt',trainDataSet[:,1:],fmt='%.2f %.2f %.2f %d')
+	
 	X_mat = np.mat(X_parameters) # size: n * m (m = 4, X0=1 now)
 	y_mat = np.mat(Y_parameters).T # size: n * 1
 	n,m = X_mat.shape
@@ -108,6 +112,10 @@ def gradAscent(trainDataSet, alpha, maxCycles):
 def classify(testDataSet, W):
 	X_parameters, Y_parameters = testDataSet[:,:-1],testDataSet[:,-1]
 	X_parameters = norm(X_parameters)
+
+	# testDataSet[:,:-1] = norm(testDataSet[:,:-1])
+	# np.savetxt('data/LRtest.txt',testDataSet[:,1:],fmt='%.2f %.2f %.2f %d')
+	
 	X_mat = np.mat(X_parameters) # size: n * m (m = 3 now)
 	y_mat = np.mat(Y_parameters).T # size: n * 1
 	n, m = X_mat.shape
