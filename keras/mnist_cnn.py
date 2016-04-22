@@ -2,8 +2,9 @@
 # @Author: Lich_Amnesia  
 # @Email: alwaysxiaop@gmail.com
 # @Date:   2016-04-22 00:44:02
-# @Last Modified time: 2016-04-22 00:44:27
+# @Last Modified time: 2016-04-22 14:19:37
 # @FileName: mnist_cnn.py
+# Can not run
 
 '''Trains a simple convnet on the MNIST dataset.
 Gets to 99.25% test accuracy after 12 epochs
