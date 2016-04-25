@@ -2,7 +2,7 @@
 # @Author: Lich_Amnesia
 # @Email: alwaysxiaop@gmail.com
 # @Date:   2016-04-22 14:20:11
-# @Last Modified time: 2016-04-22 20:34:49
+# @Last Modified time: 2016-04-25 15:38:38
 # @FileName: reuters_mlp.py
 
 '''Trains and evaluate a simple MLP
@@ -26,6 +26,7 @@ nb_epoch = 5
 print('Loading data...')
 (X_train, y_train), (X_test, y_test) = reuters.load_data(
     nb_words=max_words, test_split=0.2)
+
 print(len(X_train), 'train sequences')
 print(len(X_test), 'test sequences')
 
