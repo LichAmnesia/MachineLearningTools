@@ -226,18 +226,18 @@ def solveseqpredict(seqBondNum, pairDicSeqBondNum, seqPredictOut):
     # print pairDicSeqBondNum,seqBondNum,0,vis,ans,li,ali
     ret, ali = dfs(seqPredictOut, pairDicSeqBondNum,
                    seqBondNum, 0, vis, ans, li, ali)
-    print ret, ali
+    # print ret, ali
     ali = sorted(ali)
     now = 0
     for i in range(seqBondNum):
         if ali[i] == str(2 * i + 1) + str(2 * i + 2):
             now += 1
-    print seqBondNum, now
+    # print seqBondNum, now
     if now < seqBondNum:
         return 0, now
     else:
         return 1, now
-    print seqPredictOut, len(seqPredictOut)
+    # print seqPredictOut, len(seqPredictOut)
 
 
 def main():
