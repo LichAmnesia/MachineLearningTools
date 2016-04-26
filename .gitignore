@@ -1,3 +1,10 @@
 data/mnist.pkl.gz
 theano/logistic_sgd.pyc
 *.pyc
+Bio/Swiss-Prot/
+Bio/Database/
+Bio/Modeller/
+Bio/Output/
+Bio/Predictout/
+Bio/Set/
+Bio/Trainset/

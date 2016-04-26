@@ -2,7 +2,7 @@
 # @Author: Lich_Amnesia
 # @Email: alwaysxiaop@gmail.com
 # @Date:   2016-04-22 14:20:11
-# @Last Modified time: 2016-04-25 15:38:38
+# @Last Modified time: 2016-04-26 11:57:43
 # @FileName: reuters_mlp.py
 
 '''Trains and evaluate a simple MLP
@@ -18,6 +18,12 @@ from keras.layers.core import Dense, Dropout, Activation
 from keras.utils import np_utils
 from keras.preprocessing.text import Tokenizer
 
+
+class mlpTrain(object):
+    def __init__(self):
+        
+
+
 np.random.seed(1337)  # for reproducibility
 max_words = 1000
 batch_size = 32
@@ -29,6 +35,10 @@ print('Loading data...')
 
 print(len(X_train), 'train sequences')
 print(len(X_test), 'test sequences')
+
+import IPython
+IPython.embed()
+
 
 nb_classes = np.max(y_train) + 1
 print(nb_classes, 'classes')
