@@ -1,0 +1,68 @@
+网络结构
+        model.add(Dense(512, input_shape=(input_size,)))
+        model.add(Activation('relu'))
+        model.add(Dropout(0.5))
+
+        model.add(Dense(400, input_shape=(512,)))
+        model.add(Activation('relu'))
+        model.add(Dropout(0.5))
+
+        model.add(Dense(300, input_shape=(400,)))
+        model.add(Activation('relu'))
+        model.add(Dropout(0.5))
+
+        model.add(Dense(self.nb_classes))
+        model.add(Activation('softmax'))
+
+        model.compile(loss='categorical_crossentropy',
+                      optimizer='adam',
+                      metrics=['accuracy'])
+
+5次迭代
+173 548
+263 804
+0.657794676806
+0.681592039801
+10
+176 555
+263 804
+0.669201520913
+0.690298507463
+20
+178 559
+263 804
+0.67680608365
+0.695273631841
+
+
+网络结构
+model.add(Dense(2000, input_shape=(input_size,)))
+        model.add(Activation('relu'))
+        model.add(Dropout(0.5))
+
+        model.add(Dense(1000, input_shape=(2000,)))
+        model.add(Activation('relu'))
+        model.add(Dropout(0.5))
+
+        model.add(Dense(500, input_shape=(1000,)))
+        model.add(Activation('relu'))
+        model.add(Dropout(0.5))
+        
+        model.add(Dense(self.nb_classes))
+        model.add(Activation('softmax'))
+
+        model.compile(loss='categorical_crossentropy',
+                      optimizer='adam',
+                      metrics=['accuracy'])
+                      迭代10次
+
+166 536
+263 804
+0.631178707224
+0.666666666667
+
+
+173 554
+263 804
+0.657794676806
+0.689054726368

@@ -2,7 +2,7 @@
 # @Author: Lich_Amnesia
 # @Email: alwaysxiaop@gmail.com
 # @Date:   2016-04-22 14:20:11
-# @Last Modified time: 2016-04-26 17:58:42
+# @Last Modified time: 2016-04-26 21:28:08
 # @FileName: reuters_mlp.py
 
 '''Trains and evaluate a simple MLP
@@ -30,7 +30,7 @@ class mlpTrain(object):
 
     def __init__(self):
         # configure MLP
-        self.nb_epoch = 5
+        self.nb_epoch = 20
         self.batch_size = 32
         self.nb_classes = 2
 
@@ -128,14 +128,18 @@ class mlpTrain(object):
     def getPredictOutputMLP(self, setId, input_size, X_train, Y_train, X_test, Y_test):
         model = Sequential()
 
-        model.add(Dense(512, input_shape=(input_size,)))
+        model.add(Dense(550, input_shape=(input_size,)))
         model.add(Activation('relu'))
         model.add(Dropout(0.5))
 
-        model.add(Dense(400, input_shape=(512,)))
+        model.add(Dense(500, input_shape=(550,)))
         model.add(Activation('relu'))
         model.add(Dropout(0.5))
 
+        model.add(Dense(400, input_shape=(500,)))
+        model.add(Activation('relu'))
+        model.add(Dropout(0.5))
+        
         model.add(Dense(300, input_shape=(400,)))
         model.add(Activation('relu'))
         model.add(Dropout(0.5))
