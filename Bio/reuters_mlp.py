@@ -2,7 +2,7 @@
 # @Author: Lich_Amnesia
 # @Email: alwaysxiaop@gmail.com
 # @Date:   2016-04-22 14:20:11
-# @Last Modified time: 2016-04-26 21:28:08
+# @Last Modified time: 2016-04-26 23:29:52
 # @FileName: reuters_mlp.py
 
 '''Trains and evaluate a simple MLP
@@ -30,7 +30,7 @@ class mlpTrain(object):
 
     def __init__(self):
         # configure MLP
-        self.nb_epoch = 20
+        self.nb_epoch = 5
         self.batch_size = 32
         self.nb_classes = 2
 
@@ -148,7 +148,7 @@ class mlpTrain(object):
         model.add(Activation('softmax'))
 
         model.compile(loss='categorical_crossentropy',
-                      optimizer='adam',
+                      optimizer='sgd',
                       metrics=['accuracy'])
 
         history = model.fit(X_train, Y_train,
